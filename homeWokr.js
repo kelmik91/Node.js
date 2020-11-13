@@ -37,7 +37,6 @@ app.get('/', (req, res) => {
     data.counte = countNews;
     
     data.title = head.head.title;
-    console.log(data);
 
     request(url, function (error, response, html) {
         if (!error) {
@@ -86,12 +85,10 @@ app.post('/', urlencodedParser,  (req, res) => {
             $(item).each(function (i, element) {
                 if (i < countNews) {
                     resu.push($(this).text());
-                    // console.log($(this).text());  
                 }
                 
             });
             data.news = resu;
-            // console.log(data);
             var result = template(data);
             res.send(result);
         } else {
