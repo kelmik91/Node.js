@@ -1,101 +1,79 @@
-const express = require('express');
-const request = require('request');
-const cheerio = require('cheerio');
-const handlebars = require('handlebars');
-const fs = require('fs');
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const { title } = require('process');
+let mysql = require('mysql2');
 
-const app = express();
-app.use(cookieParser())
+const options = require('./config.js');
 
-//-----------------------handlebars-------------------------
-var source = fs.readFileSync('index.hbs', 'utf-8');
-var template = handlebars.compile(source);
-var data = {};
-//-----------------------handlebars-------------------------
+const command = process.argv[2];
+let params = [];
+for (let i = 3; i < process.argv.length; i++) {
+	params.push(process.argv[i]);
+}
+console.log(params.length);
 
-//-----------------------body-parser------------------------
-const urlencodedParser = bodyParser.urlencoded({extended: false});
-//-----------------------body-parser------------------------
+switch (command) {
+	case 'list':
+		params = [];
+		sql(list);
+		break;
 
-let url = 'https://ria.ru/';
-let head = {
-    head: {title: 'Главная', desc: 'head'},
-    politics: {title: 'Политика', desc: 'politics'},
-    economy: {title: 'Экономика', desc: 'economy'},
-    society: {title: 'Общество', desc: 'society'}
+	case 'add':
+		if (params.length == 2) {
+			sql(add);	
+		} else {
+			console.log('Errors params');
+		}
+		break;
 
+	case 'change':
+		if (params.length == 3) {
+			sql(change);
+		} else {
+			console.log('Errors params');
+		}
+		break;
+
+	case 'delete':
+		if (params.length == 1) {
+			sql(delete_sql);
+		} else {
+			console.log('Errors params');
+		}
+		break;
+
+	default:
+		console.log('Enter error!!!');
+		break;
 }
 
-app.get('/', (req, res) => {
-    let resu = [];
+function sql(param) {
+	const connection = mysql.createPool(options);
 
-    countNews = 99;
-    res.cookie('counte', 99);
-    data.counte = countNews;
-    
-    data.title = head.head.title;
+	connection.getConnection(function (err, conn) {
+		conn.execute(
+			param(), params,
+			function (err, results) {
+				if (err) {
+					console.log(err);
+				}
+				console.log(results);
+			});
 
-    request(url, function (error, response, html) {
-        if (!error) {
-            var $ = cheerio.load(html);
-            
-            $('.cell-list__item-title').each(function (i, element) {
-                if (i < countNews) {
-                    resu.push($(this).text());
-                    // console.log($(this).text());  
-                }
-            });
-            data.news = resu;
-            // console.log(data);
-            var result = template(data);
-            res.send(result);
-        } else {
-            console.log(error);
-        }
-    });
+		connection.releaseConnection(conn);
+		connection.end();
+	});
+}
 
+function list() {
+	return 'SELECT * FROM `item`';
+}
 
-});
+function add() {
+	return 'INSERT INTO `item`(`name`, `number`) VALUES ( ?, ?)';
+}
 
-app.post('/', urlencodedParser,  (req, res) => {
-    let resu = [];
-    data.title = head[req.body.select].title
+function change() {
+	return 'UPDATE `item` SET `name`= ?,`number`= ? WHERE id = ?';
+}
 
-    countNews = req.body.counte ? req.body.counte : 99;
-    res.cookie('counte', req.body.counte);
-    data.counte = countNews;
-
-    req.body.select = req.body.select === 'head' ? '' : req.body.select;
-
-    const postUrl = url + req.body.select;
-
-    let item = '';
-    if (req.body.select === '') {
-        item = '.cell-list__item-title';
-    } else {
-        item = '.list-item__title' 
-    }
-
-    request(postUrl, function (error, response, html) {
-        if (!error) {
-            var $ = cheerio.load(html);
-            $(item).each(function (i, element) {
-                if (i < countNews) {
-                    resu.push($(this).text());
-                }
-                
-            });
-            data.news = resu;
-            var result = template(data);
-            res.send(result);
-        } else {
-            console.log(error);
-        }
-    });
-
-});
-
-app.listen(3000, () => console.log('Listening on port 3000'));
+function delete_sql() {
+	return 'DELETE FROM `item` WHERE id = ?';
+}
