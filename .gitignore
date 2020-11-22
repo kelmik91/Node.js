@@ -3,3 +3,5 @@ node_modules
 npm-debug.log
 examples/login/package-lock.json
 examples/login/conf.js
+/node_modules/
+package-lock.json
