@@ -1,27 +1,48 @@
 {
-  "name": "node",
-  "version": "1.0.0",
-  "description": "",
-  "main": "analytics.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "name": "passport-vkontakte",
+  "version": "0.5.0",
+  "description": "VK.com authentication strategy for Passport.",
+  "author": {
+    "name": "Jared Hanson",
+    "email": "jaredhanson@gmail.com",
+    "url": "http://www.jaredhanson.net/"
   },
+  "contributors": [
+    {
+      "name": "Stepan Stolyarov",
+      "email": "stepan.stolyarov@gmail.com"
+    }
+  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kelmik91/Node.js.git"
+    "url": "git://github.com/stevebest/passport-vkontakte.git"
   },
-  "author": "",
-  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/kelmik91/Node.js/issues"
+    "url": "http://github.com/stevebest/passport-vkontakte/issues"
   },
-  "homepage": "https://github.com/kelmik91/Node.js#readme",
+  "main": "./lib/index.js",
   "dependencies": {
-    "body-parser": "^1.19.0",
-    "cheerio": "^1.0.0-rc.3",
-    "cookie-parser": "^1.4.5",
-    "express": "^4.17.1",
-    "handlebars": "^4.7.6",
-    "request": "^2.88.2"
-  }
+    "pkginfo": "^0.4.0",
+    "passport-oauth2": "^1.3.0"
+  },
+  "devDependencies": {
+    "vows": "^0.7.0"
+  },
+  "scripts": {
+    "test": "vows test/*-test.js"
+  },
+  "engines": {
+    "node": ">= 0.4.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "passport",
+    "vkontakte",
+    "vk",
+    "вконтакте",
+    "auth",
+    "authn",
+    "authentication",
+    "identity"
+  ]
 }

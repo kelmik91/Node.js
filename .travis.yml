@@ -1,0 +1,18 @@
+language: "node_js"
+node_js:
+  - "6"
+  - "node"
+
+cache:
+  directories:
+    - node_modules
+
+before_script:
+  # upgrade NPM
+  - npm install -g npm
+
+install:
+  - npm install
+
+script:
+  - npm test
