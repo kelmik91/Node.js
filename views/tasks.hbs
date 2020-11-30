@@ -1,0 +1,20 @@
+<ol>
+    {{#each tasks}}
+    <li>
+        {{#if this.completed }}+{{else}}-{{/if}} {{ this.description }}
+        <form method="POST" action="/task/{{ this.id }}/delete/">
+            <button type="submit">Удалить</button>
+        </form></li>
+        <form method="POST" action="/task/{{ this.id }}/complete/">
+            <input type="hidden" name="completed" value="{{ not this.completed }}">
+            <button type="submit">Завершить</button>
+        </form></li>
+    {{/each}}
+    <form method="POST" action="/task/">
+        <input type="text" name="description">
+        <button type="submit">Добавить задачу</button>
+    </form>
+    <form method="POST" action="/auth/logout/">
+        <button type="submit">Выйти</button>
+    </form>    
+</ol>
